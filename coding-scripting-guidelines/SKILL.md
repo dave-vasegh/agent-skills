@@ -1,7 +1,6 @@
 ---
 name: coding-scripting-guidelines
 description: Behavioural guidelines to reduce common LLM coding and scripting mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.
-license: MIT
 ---
 
 # Coding and Scripting Guidelines
