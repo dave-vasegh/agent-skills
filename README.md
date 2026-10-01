@@ -1,6 +1,6 @@
 # Agent Skills
 
-A collection of specialized Agent Coding skills for various development tasks and domains.
+A personal collection of Agent Coding skills for various development tasks and domains.
 
 
 ## Skills Included
