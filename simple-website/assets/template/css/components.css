@@ -1,0 +1,39 @@
+/* components.css — reusable UI components built from tokens. */
+
+/* Primary / secondary / destructive action styles, kept consistent site-wide. */
+.button--primary {
+  color: var(--color-on-accent);
+  background-color: var(--color-accent);
+}
+.button--primary:hover { filter: brightness(1.08); }
+.button--primary:active { transform: translateY(1px); }
+
+.button--secondary {
+  color: var(--color-text);
+  background-color: transparent;
+  border-color: var(--color-border);
+}
+.button--secondary:hover { background-color: var(--color-surface); }
+
+.button--danger {
+  color: var(--color-on-accent);
+  background-color: var(--color-danger);
+}
+
+/* Add an external-link indicator only where it aids understanding — apply the
+   class deliberately rather than to every outbound link. */
+.link-external::after {
+  content: " ↗";
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+}
+
+.byline { color: var(--color-text-muted); font-size: var(--text-sm); }
+
+.card {
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}

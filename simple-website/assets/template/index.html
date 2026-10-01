@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+
+  <title>Page title — Site name</title>
+  <meta name="description" content="One-sentence summary of this page.">
+  <meta name="author" content="Author name">
+  <link rel="canonical" href="https://example.com/">
+
+  <!-- Open Graph for public-facing pages. -->
+  <meta property="og:title" content="Page title — Site name">
+  <meta property="og:description" content="One-sentence summary of this page.">
+  <meta property="og:type" content="article">
+
+  <!-- FOUC guard: apply the stored theme before first paint. Inline and in
+       <head> by necessity. Setting data-theme flips color-scheme, which is
+       what light-dark() reads. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") {
+          document.documentElement.setAttribute("data-theme", t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+
+  <div class="wrapper">
+    <header class="site-header">
+      <a class="site-header__brand" href="/">Site name</a>
+
+      <nav class="primary-nav" aria-label="Primary">
+        <button class="button button--secondary nav-toggle" type="button"
+                data-nav-toggle aria-expanded="false" aria-controls="nav-list">
+          Menu
+        </button>
+        <!-- Visible by default so navigation works without JS; navigation.js
+             collapses it on narrow screens once loaded. -->
+        <ul class="primary-nav__list" id="nav-list" data-nav-list>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </nav>
+
+      <button class="button button--secondary theme-toggle" type="button"
+              data-theme-toggle aria-pressed="false"
+              aria-label="Switch to dark theme">
+        <span data-theme-icon aria-hidden="true">☾</span>
+      </button>
+    </header>
+
+    <main id="main">
+      <article class="article">
+        <h1>The article headline</h1>
+        <p class="byline">
+          By <span rel="author">Author name</span> ·
+          <time datetime="2026-08-16">16 August 2026</time>
+        </p>
+
+        <p>Opening paragraph. Body text lives in real
+          <code>&lt;p&gt;</code> elements at a constrained measure so it reads
+          well and browser reading tools extract it cleanly.</p>
+
+        <h2>A section heading</h2>
+        <p>Keep a logical heading hierarchy — it serves both accessibility and
+          reader-mode extraction.</p>
+
+        <!-- hidden="until-found": collapsed, but findable via in-page search
+             and still present in the DOM for reading tools. -->
+        <details>
+          <summary>Optional collapsible detail</summary>
+          <p hidden="until-found">Expandable content that remains searchable.</p>
+        </details>
+
+        <figure>
+          <img src="" alt="Describe the image for screen readers and reader mode."
+               loading="lazy" width="1200" height="675">
+          <figcaption>Caption belongs in figcaption.</figcaption>
+        </figure>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span data-current-year>2026</span> Site name ·
+        <a class="link-external" href="https://example.com" target="_blank">External link</a></p>
+    </footer>
+  </div>
+
+  <!-- Module scripts are deferred by default; page works without them. -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
