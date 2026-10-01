@@ -5,9 +5,15 @@ A personal collection of Agent Coding skills for various development tasks and d
 
 ## Skills Included
 
+**coding-scripting-guidelines:** Code quality guidelines
+
 **simple-website:** Static website engineering standard
 
-**coding-scripting-guidelines:** Code quality guidelines
+### Coding and Scripting Guidelines
+
+**Directory:** `coding-scripting-guidelines/`
+
+Behavioral guidelines to reduce common LLM coding and scripting mistakes. Covers principles for clean, maintainable implementations.
 
 ### Simple Website
 
@@ -25,12 +31,6 @@ Build and maintain production-quality static websites using semantic HTML5, mode
 - **Accessibility**: WCAG-aligned practices, keyboard navigation, and semantic structure
 
 Use this for: landing pages, portfolios, documentation sites, blogs, multi-page static sites, and any framework-free web projects where consistency and maintainability matter.
-
-### Coding and Scripting Guidelines
-
-**Directory:** `coding-scripting-guidelines/`
-
-Behavioral guidelines to reduce common mistakes when writing and reviewing code. Covers principles for clean, maintainable implementations.
 
 ## How to Use
 
