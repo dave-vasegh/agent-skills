@@ -1,7 +1,6 @@
 # Agent Skills
 
-A personal collection of Agent Coding skills for various development tasks and domains.
-
+A personal toolkit of Agent SKILLs for DevSecOps fundamentals and project management. Built to help AI Agents plan clearly, code cleanly and ship securely.
 
 ## Skills Included
 
