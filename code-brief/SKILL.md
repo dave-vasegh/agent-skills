@@ -20,7 +20,7 @@ Turns a rough request into two outputs: an intent record that is committed to th
 
 1. Ask which repository the work is in, and whether the user can share its structure (README, `CLAUDE.md`, folder tree, relevant files) or give access through a connector.
 2. Check for an existing intent file at `docs/intent/<slug>.md`, where `<slug>` is a short kebab-case name for the change.
-3. **Fast path:** If an intent file or a written story with acceptance criteria already exists, read it. Then ask only about the gaps, and confirm the rest with the user before relying on it.
+3. **Fast path:** If an intent file or a written story with acceptance criteria for the current change already exists, read it. Then ask only about the gaps, and confirm the rest with the user before relying on it.
 
 ## Step 1: Tool discovery
 
