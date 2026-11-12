@@ -14,7 +14,7 @@ A personal toolkit of Agent SKILLs for DevSecOps fundamentals and project manage
 
 **Directory:** `code-brief/`
 
-Turns a rough request into a versioned intent record and a copy-ready Claude Code prompt. This skill only produces the record and the prompt. It does not write or change code. It covers:
+Turns a rough request into a versioned intent record and a Claude Code brief. The operator then chooses to run the brief straight away in the current session, or to get it as a single copy-ready code block to paste or edit. No code is changed unless the operator chooses to run it. It covers:
 
 - **Repo and intent discovery:** Finds any existing intent file or story with acceptance criteria and asks only about the gaps
 - **Tool discovery:** Lists the skills, MCP servers and connectors available now, and suggests ones to install or configure in Claude Code
@@ -22,6 +22,7 @@ Turns a rough request into a versioned intent record and a copy-ready Claude Cod
 - **Assumptions register:** Lists every assumption for the user to confirm, change or reject, and records any still open
 - **Intent record:** Writes `docs/intent/<slug>.md` with a security overlay, a STRIDE threat model, overrides and open questions
 - **Claude Code brief:** One prompt with context, task, constraints, security requirements, ordered steps with checkpoints, verification mapped to each acceptance criterion, what not to change, and what to report back
+- **Delivery choice:** Run the brief now in the current session (when it has repo access), or copy it as one code block
 
 Use this for: writing a prompt, brief or spec before asking Claude Code to build, fix, refactor or review something. Trigger it with `/code-brief`. It is not for questions about how Claude Code works or how to set it up.
 
