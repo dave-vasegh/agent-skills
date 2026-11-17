@@ -33,7 +33,7 @@ Before writing the brief, check what is available:
 
 ## Step 2: Interview
 
-Ask in small groups, not all at once. Cover these areas:
+Ask questions in small groups, not all at once. Cover these areas:
 
 1. **Intent:** Who is the change for? What outcome do they need? Why now?
 2. **Scope:** What is in scope and what is explicitly out of scope?
@@ -42,17 +42,24 @@ Ask in small groups, not all at once. Cover these areas:
 5. **Data and security:** What data is touched and how sensitive is it? Where do secrets live? Who authenticates, and how? Is anything internet-facing? Are there cost guardrails?
 6. **Verification:** What tests, checks or manual steps prove it works?
 
-For every assumption you have made, state it in a numbered list like this:
+For every assumption you have made, state it in a numbered list, each starting with its status `Open`:
 
-> A1. I'm assuming the service runs on AWS Lambda. Confirm, change or reject?
+> A1. **Open:** I'm assuming the service runs on AWS Lambda. Confirm, change or reject?
+
+Assumption lifecycle:
+
+- New assumptions are presented with the status `Open`.
+- When the user answers Confirm, Change or Reject, the assumption becomes `Finalised`. Record the resolution (Confirmed, Changed or Rejected) in the register, and for Changed, record the new value in Notes.
+- If the user asks a question about an assumption, or asks for alternatives, it stays `Open`. Answer the question, then restate the assumption and its options in full.
+- If two assumptions contradict each other, whatever their status, set both back to `Open`. Restate both in full in the same message and explain the conflict.
 
 Rules for presenting assumptions:
 
 - Write the list in the visible reply text of the same message that asks for approval. Do not put it only in your thinking, a tool call or the intent file, and do not rely on a list from an earlier turn.
-- Present no more than about 5 assumptions at a time, so each batch fits on screen.
+- Present small numbers of assumptions at a time, so each batch covers the relevant high priority topics.
 - If you use a question tool such as `AskUserQuestion`, the user may see only the dialog. Put the full assumption text inside each question (one question per assumption, with Confirm / Change / Reject options). Never ask something like "approve A1–A7?" when the text is shown somewhere else.
 
-Do not move on until each assumption has an associated status of: Confirmed, Changed or Rejected. Anything still open is recorded as open.
+Do not move on until every assumption is `Finalised`. Anything still `Open` is recorded as open.
 
 ## Step 3: Write the intent record
 
@@ -82,8 +89,8 @@ Date: <YYYY-MM-DD>
 ## Definition of done
 
 ## Assumptions register
-| ID | Assumption | Status (Confirmed / Rejected / Changed / Open) | Notes |
-|----|------------|-----------------------------------------------|-------|
+| ID | Assumption | Status (Open / Finalised) | Resolution (Confirmed / Changed / Rejected) | Notes |
+|----|------------|---------------------------|----------------------------------------------|-------|
 
 ## Security overlay
 - Data classification:
@@ -124,7 +131,8 @@ Run these checks on the brief before either delivery option:
 
 - Every acceptance criterion maps to a verification step.
 - Every STRIDE row with a threat has a mitigation or an open question.
-- No open assumption is written as if it were confirmed.
+- No open assumption is written as if it were finalised.
+- No two assumptions contradict each other. Any contradiction, whatever the status, is set back to `Open` and restated in full.
 - The brief names specific files or directories, not "the codebase".
 - The brief says what not to change.
 - Every assumption the user is asked about appears in full in the same message as the question.
