@@ -1,20 +1,21 @@
 ---
 name: code-brief
-description: Use when the user asks for a well-articulated prompt, brief or spec for Claude Code, or wants Claude Code to build, fix, refactor or review something and needs the instructions written first. Also triggered by /code-brief. Interviews the user to surface assumptions, records intent as a versioned markdown file in the repo with a STRIDE threat model, checks available tools, then either carries out the brief in the current session or returns it as one copy-ready Claude Code prompt, as the operator chooses. Not for questions about how Claude Code works, or how to install or configure it.
+description: Use when the user asks for a well-articulated prompt, brief or spec for Claude Code, or wants Claude Code to build, fix, refactor or review something and needs the instructions written first. Also triggered by /code-brief. Interviews the user to surface assumptions, records intent as a versioned markdown file in the repo with a STRIDE threat model, checks available tools, then either carries out the brief in the current session or returns it as one copy-ready Claude Code prompt, as the user chooses. Not for questions about how Claude Code works, or how to install or configure it.
 ---
 
 # Code Brief
 
-Turns a rough request into two outputs: an intent record that is committed to the repo, and a Claude Code brief built from it. The operator then chooses how the brief is delivered: **Run now** (carry it out in this session) or **Copy** (return it as a single code block to paste or edit). No code is written or changed until the operator chooses Run now.
+Turns a rough request into two outputs: an intent record that is committed to the repo, and a Claude Code brief built from it. The user then chooses how the brief is delivered: **Run now** (carry it out in this session) or **Copy** (return it as a single code block to paste or edit). No code is written or changed until the user chooses Run now.
 
 ## Principles
 
 - Never invent facts about the repo, stack, data or environment. Ask for them.
 - Surface every assumption explicitly and let the user confirm, change or reject it.
+- Never refer to an assumption by ID alone. Whenever you ask the user to confirm, change or reject assumptions, restate each one in that same message. Assumptions that have not been confirmed by the user (in your thinking, in tool calls, in files or in earlier turns) do not count as shown.
 - Ambiguity is resolved by asking, not by choosing a default silently.
 - The user can override any default. Record each override and its reason.
 - Keep the process light. There is no review gate at this stage.
-- Do not start implementation until the operator chooses Run now.
+- Do not start implementation until the user chooses Run now.
 
 ## Step 0: Locate the repo and any existing intent
 
@@ -45,7 +46,13 @@ For every assumption you have made, state it in a numbered list like this:
 
 > A1. I'm assuming the service runs on AWS Lambda. Confirm, change or reject?
 
-Do not move on until each assumption is confirmed, changed or rejected. Anything still open is recorded as open.
+Rules for presenting assumptions:
+
+- Write the list in the visible reply text of the same message that asks for approval. Do not put it only in your thinking, a tool call or the intent file, and do not rely on a list from an earlier turn.
+- Present no more than about 5 assumptions at a time, so each batch fits on screen.
+- If you use a question tool such as `AskUserQuestion`, the user may see only the dialog. Put the full assumption text inside each question (one question per assumption, with Confirm / Change / Reject options). Never ask something like "approve A1–A7?" when the text is shown somewhere else.
+
+Do not move on until each assumption has an associated status of: Confirmed, Changed or Rejected. Anything still open is recorded as open.
 
 ## Step 3: Write the intent record
 
@@ -75,7 +82,7 @@ Date: <YYYY-MM-DD>
 ## Definition of done
 
 ## Assumptions register
-| ID | Assumption | Status (confirmed / rejected / changed / open) | Notes |
+| ID | Assumption | Status (Confirmed / Rejected / Changed / Open) | Notes |
 |----|------------|-----------------------------------------------|-------|
 
 ## Security overlay
@@ -120,19 +127,20 @@ Run these checks on the brief before either delivery option:
 - No open assumption is written as if it were confirmed.
 - The brief names specific files or directories, not "the codebase".
 - The brief says what not to change.
+- Every assumption the user is asked about appears in full in the same message as the question.
 
 ## Step 5: Deliver the brief
 
-1. List any assumptions still marked open, so the operator can resolve them first.
-2. Ask the operator to choose one option:
+1. List any assumptions still marked open, each written out in full with its ID (not just the IDs), so the user can resolve them first.
+2. Ask the user to choose one option:
    - **Run now:** carry out the brief in this session.
    - **Copy:** return the brief as a single code block to paste or edit.
 3. Offer **Run now** only if this session can actually change the repo, for example Claude Code with the repo checked out. If it cannot, for example a chat without repo access, say so and offer only **Copy**.
-4. If any assumption is still open and the operator picks **Run now**, warn them first. Ask them to resolve the assumptions or confirm they accept them.
+4. If any assumption is still open and the user picks **Run now**, warn them first. Restate each open assumption in full in the warning, then ask them to resolve it or confirm they accept it.
 
 **Run now:**
 
-- Show the full brief first, so the operator can see exactly what will run.
+- Show the full brief first, so the user can see exactly what will run.
 - Then follow the brief as your instructions. Stop and report at each checkpoint, respect "Do not change", run every verification step, and report back in the format given in "Output".
 
 **Copy:**
