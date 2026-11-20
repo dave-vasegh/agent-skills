@@ -9,7 +9,7 @@ Turns a rough request into two outputs: an intent record that is committed to th
 
 ## Principles
 
-- Never invent facts about the repo, stack, data or environment. Ask for them.
+- Never invent facts. Verify with the available tools first, and ask only for what can't be checked.
 - Surface every assumption explicitly and let the user confirm, change or reject it.
 - Never refer to an assumption by ID alone. Whenever you ask the user to confirm, change or reject assumptions, restate each one in that same message. Assumptions that have not been confirmed by the user (in your thinking, in tool calls, in files or in earlier turns) do not count as shown.
 - Ambiguity is resolved by asking, not by choosing a default silently.
@@ -39,8 +39,9 @@ Ask questions in small groups, not all at once. Cover these areas:
 2. **Scope:** What is in scope and what is explicitly out of scope?
 3. **Acceptance criteria:** How will someone know it works? What is the definition of done?
 4. **Priority and constraints:** Deadlines, budget, approved technology, compatibility.
-5. **Data and security:** What data is touched and how sensitive is it? Where do secrets live? Who authenticates, and how? Is anything internet-facing? Are there cost guardrails?
-6. **Verification:** What tests, checks or manual steps prove it works?
+5. **Scale and cost:** Roughly how much will this handle (data volume, users, requests or runs)? Is there a budget or cost ceiling? If there is none, record "none" and move on.
+6. **Data and security:** What data is touched and how sensitive is it? Where do secrets live? Who authenticates, and how? Is anything internet-facing? Are there cost guardrails?
+7. **Verification:** What tests, checks or manual steps prove it works?
 
 For every assumption you have made, state it in a numbered list, each starting with its status `Open`:
 
@@ -57,7 +58,9 @@ Rules for presenting assumptions:
 
 - Write the list in the visible reply text of the same message that asks for approval. Do not put it only in your thinking, a tool call or the intent file, and do not rely on a list from an earlier turn.
 - Present small numbers of assumptions at a time, so each batch covers the relevant high priority topics.
-- If you use a question tool such as `AskUserQuestion`, the user may see only the dialog. Put the full assumption text inside each question (one question per assumption, with Confirm / Change / Reject options). Never ask something like "approve A1–A7?" when the text is shown somewhere else.
+- Present each critical assumption on its own: one that changes the architecture, security posture, cost or scope.
+- Bundle closely related defaults that belong to the same decision (for example log retention, log format and log encryption) into one question. If the bundle can not be accepted, restate every default in the bundle in full, and let the user accept or change individual items. Never bundle unrelated defaults, or a critical assumption with defaults.
+- If you use a question tool such as `AskUserQuestion`, the user may see only the dialog. Put the full assumption text inside each question (one question per critical assumption or per bundle of related defaults, with Confirm / Change / Reject options). Never ask something like "approve A1–A7?" when the text is shown somewhere else.
 
 Do not move on until every assumption is `Finalised`. Anything still `Open` is recorded as open.
 
