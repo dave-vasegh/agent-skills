@@ -42,7 +42,8 @@ Ask questions in small groups, not all at once. Cover these areas:
 5. **Scale and cost:** Roughly how much will this handle (data volume, users, requests or runs)? Is there a budget or cost ceiling? If there is none, record "none" and move on.
 6. **Data and security:** What data is touched and how sensitive is it? Where do secrets live? Who authenticates, and how? Is anything internet-facing? Are there cost guardrails? Is the repo public, or might it become public? Which identifiers (account IDs, emails, domains, internal hostnames) must never be committed?
 7. **Execution boundary:** What may the agent run? For example read-only checks, local tests, plan or dry-run, deploy, destroy, or cloud API calls. Who runs the rest, and where?
-8. **Verification:** What tests, checks or manual steps prove it works?
+8. **Reversibility:** How is this rolled back or torn down? What is irreversible, such as data deletion, account closure or burned email addresses? What has to survive a teardown?
+9. **Verification:** What tests, checks or manual steps prove it works?
 
 For every assumption you have made, state it in a numbered list, each starting with its status `Open`:
 
@@ -101,6 +102,11 @@ Date: <YYYY-MM-DD>
 - Agent must not run:
 - Run by the owner (where):
 
+## Reversibility
+- Rollback or teardown:
+- Irreversible actions:
+- Must survive a teardown:
+
 ## Security overlay
 - Data classification:
 - Secrets handling:
@@ -132,6 +138,7 @@ Build the prompt from the intent record. Use this structure:
 2. **Task:** One clear statement of the change.
 3. **Constraints:** Constraints from the intent record, including the security overlay and cost guardrails.
 4. **Security requirements:** Each mitigation from the STRIDE table, written as an instruction.
+   Also include the reversibility requirements: how to roll back or tear down, and a guard (for example a confirmation, a dry-run default or `prevent_destroy`) on every irreversible action.
 5. **Approach:** Ordered steps, with checkpoints where Claude Code should stop and report.
 6. **Verification:** Map each acceptance criterion to a test or check, and state exactly how to run it.
 7. **Do not change or run:** Explicit out-of-scope items, any protected files, and every command or action outside the execution boundary.
