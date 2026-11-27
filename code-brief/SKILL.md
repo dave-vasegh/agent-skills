@@ -15,14 +15,18 @@ Turns a rough request into two outputs: an intent record that is committed to th
 - Never refer to an assumption by ID alone. Whenever you ask the user to confirm, change or reject assumptions, restate each one in that same message. Assumptions that have not been confirmed by the user (in your thinking, in tool calls, in files or in earlier turns) do not count as shown.
 - Ambiguity is resolved by asking, not by choosing a default silently.
 - The user can override any default. Record each override and its reason.
-- Keep the process light. There is no review gate at this stage.
+- Keep the process light, and size it to the change (see Step 0). There is no review gate at this stage.
 - Do not start implementation until the user chooses Run now.
 
-## Step 0: Locate the repo and any existing intent
+## Step 0: Locate the repo, answer first, and size the process
 
-1. Ask which repository the work is in, and whether the user can share its structure (README, `CLAUDE.md`, folder tree, relevant files) or give access through a connector.
+1. **Detect the repo yourself** when the session can read files: the working directory, `git status`, README, `CLAUDE.md` and the folder tree. Ask which repository the work is in, or ask for its structure or a connector, only when you can't read it, for example in a chat without repo access. If the folder isn't a git repository yet, say so and suggest `git init` before the intent record is committed.
 2. Check for an existing intent file at `docs/intent/<slug>.md`, where `<slug>` is a short kebab-case name for the change.
 3. **Fast path:** If an intent file or a written story with acceptance criteria for the current change already exists, read it. Then ask only about the gaps, and confirm the rest with the user before relying on it.
+4. **Answer the question first:** If the request is a question (for example "can I do X?"), give a short answer with sources before the interview, then carry on with the brief.
+5. **Size the process:** Propose a mode and let the user confirm it.
+   - **Quick mode:** for small, low-risk changes that add no infrastructure, have no security or cost impact, and are easy to revert. Interview only scope, acceptance criteria, the execution boundary and verification. Write the intent record without the security overlay and the STRIDE table, and state `Mode: Quick (not threat-modelled)` in it.
+   - **Full mode:** for everything else. Follow every step below.
 
 ## Step 1: Tool discovery
 
@@ -76,6 +80,7 @@ Create `docs/intent/<slug>.md` in the repo with this structure:
 # Intent: <title>
 
 Status: Draft
+Mode: Full
 Owner: <name>
 Date: <YYYY-MM-DD>
 
@@ -120,7 +125,7 @@ Date: <YYYY-MM-DD>
 - Private identifiers (kept out of git):
 
 ## Threat model (STRIDE)
-| Component | Threat category (S/T/R/I/D/E) | Threat | Mitigation | Status |
+| Component | Threat category (S/T/R/I/D/E) | Threat | Mitigation | Status (Open / Mitigated / Accepted) |
 |-----------|-------------------------------|--------|------------|--------|
 
 ## Overrides
@@ -129,7 +134,14 @@ Date: <YYYY-MM-DD>
 ## Open questions
 ```
 
-The intent record is committed, so never write an identifier the user marked as private into it. Use placeholders instead (for example `123456789012` or `user@example.com`) and say where the real values live: git-ignored files such as `*.tfvars`, `.env` or a backend config.
+Intent status lifecycle:
+
+- `Draft`: when the record is first written.
+- `Agreed`: when every assumption is `Finalised` and the user chooses Run now or Copy.
+- `Implemented`: when Run now finishes the approach steps.
+- `Verified`: when every acceptance criterion has passed and is ticked.
+
+Update the `Status` line at each change. The intent record is committed, so never write an identifier the user marked as private into it. Use placeholders instead (for example `123456789012` or `user@example.com`) and say where the real values live: git-ignored files such as `*.tfvars`, `.env` or a backend config.
 
 Then tell the user to review the file and commit it, for example `git add docs/intent/<slug>.md && git commit -m "Add intent record for <slug>"`.
 
@@ -168,15 +180,21 @@ Run these checks on the brief before either delivery option:
 2. Ask the user to choose one option:
    - **Run now:** carry out the brief in this session.
    - **Copy:** return the brief as a single code block to paste or edit.
-3. Offer **Run now** only if this session can actually change the repo, for example Claude Code with the repo checked out. If it cannot, for example a chat without repo access, say so and offer only **Copy**.
-4. If any assumption is still open and the user picks **Run now**, warn them first. Restate each open assumption in full in the warning, then ask them to resolve it or confirm they accept it.
+3. For Run now, also ask for the checkpoint mode:
+   - **Stop at every checkpoint** (default).
+   - **Stop only on deviations or failures:** report at each checkpoint and carry on unless the deviation rule applies or a check fails.
+4. Offer **Run now** only if this session can actually change the repo, for example Claude Code with the repo checked out. If it cannot, for example a chat without repo access, say so and offer only **Copy**.
+5. If any assumption is still open and the user picks **Run now**, warn them first. Restate each open assumption in full in the warning, then ask them to resolve it or confirm they accept it.
 
 **Run now:**
 
 - Show the full brief first, so the user can see exactly what will run.
-- Then follow the brief as your instructions. Apply the deviation rule whenever a fact contradicts the intent record. Stop and report at each checkpoint, respect "Do not change or run", run every verification step, and report back in the format given in "Output".
+- Set the intent record's status to `Agreed`.
+- Then follow the brief as your instructions. Apply the deviation rule whenever a fact contradicts the intent record. Stop and report at each checkpoint according to the chosen checkpoint mode, respect "Do not change or run", run every verification step, and report back in the format given in "Output".
+- When the steps are done, set the status to `Implemented`, and to `Verified` once every acceptance criterion has passed and is ticked.
 
 **Copy:**
 
+- Set the intent record's status to `Agreed`.
 - Return the brief in one fenced code block. Put nothing else inside the block, so it can be pasted or edited as it is.
 - Below the block, add a one-line reminder to paste it into Claude Code from the repo root.
