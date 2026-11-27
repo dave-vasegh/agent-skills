@@ -36,7 +36,7 @@ Before writing the brief, check what is available:
 Ask questions in small groups, not all at once. Cover these areas:
 
 1. **Intent:** Who is the change for? What outcome do they need? Why now?
-2. **Scope:** What is in scope and what is explicitly out of scope?
+2. **Scope:** What is in scope and what is explicitly out of scope? What else lives in the target environment (account, cluster, database, shared service) that must not be affected?
 3. **Acceptance criteria:** How will someone know it works? What is the definition of done?
 4. **Priority and constraints:** Deadlines, budget, approved technology, compatibility.
 5. **Scale and cost:** Roughly how much will this handle (data volume, users, requests or runs)? Is there a budget or cost ceiling? If there is none, record "none" and move on.
@@ -86,6 +86,7 @@ Date: <YYYY-MM-DD>
 ## Scope
 - In scope:
 - Out of scope:
+- Must not be affected (resources outside the repo):
 
 ## Acceptance criteria
 - [ ] AC1:
@@ -141,7 +142,7 @@ Build the prompt from the intent record. Use this structure:
    Also include the reversibility requirements: how to roll back or tear down, and a guard (for example a confirmation, a dry-run default or `prevent_destroy`) on every irreversible action.
 5. **Approach:** Ordered steps, with checkpoints where Claude Code should stop and report.
 6. **Verification:** Map each acceptance criterion to a test or check, and state exactly how to run it.
-7. **Do not change or run:** Explicit out-of-scope items, any protected files, and every command or action outside the execution boundary.
+7. **Do not change or run:** Explicit out-of-scope items, any protected files, the resources outside the repo that must not be affected, and every command or action outside the execution boundary.
 8. **Output:** What Claude Code should report back when finished.
 
 ## Checks before delivery
