@@ -40,7 +40,7 @@ Ask questions in small groups, not all at once. Cover these areas:
 3. **Acceptance criteria:** How will someone know it works? What is the definition of done?
 4. **Priority and constraints:** Deadlines, budget, approved technology, compatibility.
 5. **Scale and cost:** Roughly how much will this handle (data volume, users, requests or runs)? Is there a budget or cost ceiling? If there is none, record "none" and move on.
-6. **Data and security:** What data is touched and how sensitive is it? Where do secrets live? Who authenticates, and how? Is anything internet-facing? Are there cost guardrails?
+6. **Data and security:** What data is touched and how sensitive is it? Where do secrets live? Who authenticates, and how? Is anything internet-facing? Are there cost guardrails? Is the repo public, or might it become public? Which identifiers (account IDs, emails, domains, internal hostnames) must never be committed?
 7. **Verification:** What tests, checks or manual steps prove it works?
 
 For every assumption you have made, state it in a numbered list, each starting with its status `Open`:
@@ -102,6 +102,7 @@ Date: <YYYY-MM-DD>
 - Logging and monitoring:
 - Cost guardrails:
 - Compliance or policy constraints:
+- Private identifiers (kept out of git):
 
 ## Threat model (STRIDE)
 | Component | Threat category (S/T/R/I/D/E) | Threat | Mitigation | Status |
@@ -112,6 +113,8 @@ Date: <YYYY-MM-DD>
 
 ## Open questions
 ```
+
+The intent record is committed, so never write an identifier the user marked as private into it. Use placeholders instead (for example `123456789012` or `user@example.com`) and say where the real values live: git-ignored files such as `*.tfvars`, `.env` or a backend config.
 
 Then tell the user to review the file and commit it, for example `git add docs/intent/<slug>.md && git commit -m "Add intent record for <slug>"`.
 
@@ -138,6 +141,7 @@ Run these checks on the brief before either delivery option:
 - No two assumptions contradict each other. Any contradiction, whatever the status, is set back to `Open` and restated in full.
 - The brief names specific files or directories, not "the codebase".
 - The brief says what not to change.
+- The intent record and the brief contain no identifier the user marked as private. The brief tells Claude Code to keep real values in git-ignored files only.
 - Every assumption the user is asked about appears in full in the same message as the question.
 
 ## Step 5: Deliver the brief
