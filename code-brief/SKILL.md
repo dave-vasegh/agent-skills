@@ -41,7 +41,8 @@ Ask questions in small groups, not all at once. Cover these areas:
 4. **Priority and constraints:** Deadlines, budget, approved technology, compatibility.
 5. **Scale and cost:** Roughly how much will this handle (data volume, users, requests or runs)? Is there a budget or cost ceiling? If there is none, record "none" and move on.
 6. **Data and security:** What data is touched and how sensitive is it? Where do secrets live? Who authenticates, and how? Is anything internet-facing? Are there cost guardrails? Is the repo public, or might it become public? Which identifiers (account IDs, emails, domains, internal hostnames) must never be committed?
-7. **Verification:** What tests, checks or manual steps prove it works?
+7. **Execution boundary:** What may the agent run? For example read-only checks, local tests, plan or dry-run, deploy, destroy, or cloud API calls. Who runs the rest, and where?
+8. **Verification:** What tests, checks or manual steps prove it works?
 
 For every assumption you have made, state it in a numbered list, each starting with its status `Open`:
 
@@ -95,6 +96,11 @@ Date: <YYYY-MM-DD>
 | ID | Assumption | Status (Open / Finalised) | Resolution (Confirmed / Changed / Rejected) | Notes |
 |----|------------|---------------------------|----------------------------------------------|-------|
 
+## Execution boundary
+- Agent may run:
+- Agent must not run:
+- Run by the owner (where):
+
 ## Security overlay
 - Data classification:
 - Secrets handling:
@@ -128,7 +134,7 @@ Build the prompt from the intent record. Use this structure:
 4. **Security requirements:** Each mitigation from the STRIDE table, written as an instruction.
 5. **Approach:** Ordered steps, with checkpoints where Claude Code should stop and report.
 6. **Verification:** Map each acceptance criterion to a test or check, and state exactly how to run it.
-7. **Do not change:** Explicit out-of-scope items and any protected files.
+7. **Do not change or run:** Explicit out-of-scope items, any protected files, and every command or action outside the execution boundary.
 8. **Output:** What Claude Code should report back when finished.
 
 ## Checks before delivery
@@ -140,7 +146,7 @@ Run these checks on the brief before either delivery option:
 - No open assumption is written as if it were finalised.
 - No two assumptions contradict each other. Any contradiction, whatever the status, is set back to `Open` and restated in full.
 - The brief names specific files or directories, not "the codebase".
-- The brief says what not to change.
+- The brief says what not to change, and what not to run, matching the execution boundary.
 - The intent record and the brief contain no identifier the user marked as private. The brief tells Claude Code to keep real values in git-ignored files only.
 - Every assumption the user is asked about appears in full in the same message as the question.
 
@@ -156,7 +162,7 @@ Run these checks on the brief before either delivery option:
 **Run now:**
 
 - Show the full brief first, so the user can see exactly what will run.
-- Then follow the brief as your instructions. Stop and report at each checkpoint, respect "Do not change", run every verification step, and report back in the format given in "Output".
+- Then follow the brief as your instructions. Stop and report at each checkpoint, respect "Do not change or run", run every verification step, and report back in the format given in "Output".
 
 **Copy:**
 
