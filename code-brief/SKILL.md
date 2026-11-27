@@ -10,6 +10,7 @@ Turns a rough request into two outputs: an intent record that is committed to th
 ## Principles
 
 - Never invent facts. Verify with the available tools first, and ask only for what can't be checked.
+- Facts that change over time (versions, API schemas, prices, quotas, service limits) must be looked up and cited before an assumption that depends on them is finalised. Don't rely on memory for them.
 - Surface every assumption explicitly and let the user confirm, change or reject it.
 - Never refer to an assumption by ID alone. Whenever you ask the user to confirm, change or reject assumptions, restate each one in that same message. Assumptions that have not been confirmed by the user (in your thinking, in tool calls, in files or in earlier turns) do not count as shown.
 - Ambiguity is resolved by asking, not by choosing a default silently.
@@ -54,6 +55,7 @@ Assumption lifecycle:
 - New assumptions are presented with the status `Open`.
 - When the user answers Confirm, Change or Reject, the assumption becomes `Finalised`. Record the resolution (Confirmed, Changed or Rejected) in the register, and for Changed, record the new value in Notes.
 - If the user asks a question about an assumption, or asks for alternatives, it stays `Open`. Answer the question, then restate the assumption and its options in full.
+- An assumption that depends on a fact that changes over time stays `Open` until the fact is looked up. Cite the source when you restate it.
 - If two assumptions contradict each other, whatever their status, set both back to `Open`. Restate both in full in the same message and explain the conflict.
 
 Rules for presenting assumptions:
@@ -122,7 +124,7 @@ Date: <YYYY-MM-DD>
 |-----------|-------------------------------|--------|------------|--------|
 
 ## Overrides
-- Default overridden, and why:
+- <YYYY-MM-DD> · What changed (default, AC or assumption) · Why · Evidence or source · Approved by:
 
 ## Open questions
 ```
@@ -140,7 +142,7 @@ Build the prompt from the intent record. Use this structure:
 3. **Constraints:** Constraints from the intent record, including the security overlay and cost guardrails.
 4. **Security requirements:** Each mitigation from the STRIDE table, written as an instruction.
    Also include the reversibility requirements: how to roll back or tear down, and a guard (for example a confirmation, a dry-run default or `prevent_destroy`) on every irreversible action.
-5. **Approach:** Ordered steps, with checkpoints where Claude Code should stop and report.
+5. **Approach:** Ordered steps, with checkpoints where Claude Code should stop and report. Include this deviation rule: if any step finds a fact that contradicts an acceptance criterion, assumption or constraint, stop. Report the deviation, the evidence with its source, and the proposed change. Wait for approval, then record it under Overrides in the intent record and update the affected acceptance criterion before continuing.
 6. **Verification:** Map each acceptance criterion to a test or check, and state exactly how to run it.
 7. **Do not change or run:** Explicit out-of-scope items, any protected files, the resources outside the repo that must not be affected, and every command or action outside the execution boundary.
 8. **Output:** What Claude Code should report back when finished.
@@ -153,6 +155,8 @@ Run these checks on the brief before either delivery option:
 - Every STRIDE row with a threat has a mitigation or an open question.
 - No open assumption is written as if it were finalised.
 - No two assumptions contradict each other. Any contradiction, whatever the status, is set back to `Open` and restated in full.
+- Every fact that changes over time (versions, API schemas, prices, quotas) is cited with a source, or the brief tells Claude Code to look it up first.
+- The brief contains the deviation rule.
 - The brief names specific files or directories, not "the codebase".
 - The brief says what not to change, and what not to run, matching the execution boundary.
 - The intent record and the brief contain no identifier the user marked as private. The brief tells Claude Code to keep real values in git-ignored files only.
@@ -170,7 +174,7 @@ Run these checks on the brief before either delivery option:
 **Run now:**
 
 - Show the full brief first, so the user can see exactly what will run.
-- Then follow the brief as your instructions. Stop and report at each checkpoint, respect "Do not change or run", run every verification step, and report back in the format given in "Output".
+- Then follow the brief as your instructions. Apply the deviation rule whenever a fact contradicts the intent record. Stop and report at each checkpoint, respect "Do not change or run", run every verification step, and report back in the format given in "Output".
 
 **Copy:**
 
