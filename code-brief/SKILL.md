@@ -25,7 +25,7 @@ Turns a rough request into two outputs: an intent record that is committed to th
 3. **Fast path:** If an intent file or a written story with acceptance criteria for the current change already exists, read it. Then ask only about the gaps, and confirm the rest with the user before relying on it.
 4. **Answer the question first:** If the request is a question (for example "can I do X?"), give a short answer with sources before the interview, then carry on with the brief.
 5. **Size the process:** Propose a mode and let the user confirm it.
-   - **Quick mode:** for small, low-risk changes that add no infrastructure, have no security or cost impact, and are easy to revert. Interview only scope, acceptance criteria, the execution boundary and verification. Write the intent record without the security overlay and the STRIDE table, and state `Mode: Quick (not threat-modelled)` in it.
+   - **Quick mode:** for small, low-risk changes that add no infrastructure, have no security or cost impact, and are easy to revert. Interview only scope, acceptance criteria, the execution boundary, verification, and which identifiers must never be committed. Write the intent record without the security overlay and the STRIDE table, and state `Mode: Quick (not threat-modelled)` in it.
    - **Full mode:** for everything else. Follow every step below.
 
 ## Step 1: Tool discovery
@@ -164,7 +164,7 @@ Build the prompt from the intent record. Use this structure:
 Run these checks on the brief before either delivery option:
 
 - Every acceptance criterion maps to a verification step.
-- Every STRIDE row with a threat has a mitigation or an open question.
+- In Full mode, every STRIDE row with a threat has a mitigation or an open question.
 - No open assumption is written as if it were finalised.
 - No two assumptions contradict each other. Any contradiction, whatever the status, is set back to `Open` and restated in full.
 - Every fact that changes over time (versions, API schemas, prices, quotas) is cited with a source, or the brief tells Claude Code to look it up first.
@@ -195,6 +195,6 @@ Run these checks on the brief before either delivery option:
 
 **Copy:**
 
-- Set the intent record's status to `Agreed`.
+- Set the intent record's status to `Agreed`. If this session can't edit the repo, tell the user to make that change.
 - Return the brief in one fenced code block. Put nothing else inside the block, so it can be pasted or edited as it is.
 - Below the block, add a one-line reminder to paste it into Claude Code from the repo root.

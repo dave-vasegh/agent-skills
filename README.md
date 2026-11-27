@@ -16,13 +16,14 @@ A personal toolkit of Agent SKILLs for DevSecOps fundamentals and project manage
 
 Turns a rough request into a versioned intent record and a Claude Code brief. The operator then chooses to run the brief straight away in the current session, or to get it as a single copy-ready code block to paste or edit. No code is changed unless the operator chooses to run it. It covers:
 
-- **Repo and intent discovery:** Finds any existing intent file or story with acceptance criteria and asks only about the gaps
+- **Repo and intent discovery:** Detects the repo and git state, finds any existing intent file or story with acceptance criteria, and asks only about the gaps
+- **Answer first, then size the process:** Answers a feasibility question with sources before the interview, and proposes Quick mode (small, low-risk changes) or Full mode
 - **Tool discovery:** Lists the skills, MCP servers and connectors available now, and suggests ones to install or configure in Claude Code
-- **Structured interview:** Intent, scope, acceptance criteria, constraints, data and security, and verification, asked in small groups
+- **Structured interview:** Intent, scope (including what else shares the target environment), acceptance criteria, constraints, scale and cost, data and security (including identifiers that must stay out of git), the execution boundary, reversibility, and verification, asked in small groups
 - **Assumptions register:** Lists every assumption for the user to confirm, change or reject, and records any still open
-- **Intent record:** Writes `docs/intent/<slug>.md` with a security overlay, a STRIDE threat model, overrides and open questions
-- **Claude Code brief:** One prompt with context, task, constraints, security requirements, ordered steps with checkpoints, verification mapped to each acceptance criterion, what not to change, and what to report back
-- **Delivery choice:** Run the brief now in the current session (when it has repo access), or copy it as one code block
+- **Intent record:** Writes `docs/intent/<slug>.md` with the execution boundary, reversibility, a security overlay, a STRIDE threat model, dated overrides and open questions. Private identifiers are replaced with placeholders. Status moves Draft → Agreed → Implemented → Verified
+- **Claude Code brief:** One prompt with context, task, constraints, security and reversibility requirements, ordered steps with checkpoints and a deviation rule, verification mapped to each acceptance criterion, what not to change or run, and what to report back
+- **Delivery choice:** Run the brief now in the current session (when it has repo access), stopping at every checkpoint or only on deviations, or copy it as one code block
 
 Use this for: writing a prompt, brief or spec before asking Claude Code to build, fix, refactor or review something. Trigger it with `/code-brief`. It is not for questions about how Claude Code works or how to set it up.
 
